@@ -237,7 +237,7 @@ func withAuth(dial radix.ConnFunc, redisPassword string) radix.ConnFunc {
 	}
 }
 
-func scanKeys(client radix.Client, keyRegex string, keyBatches chan<- []string, progressNotifications chan<- ProgressNotification) error {
+func scanKeys(client radix.Client, keyRegex string, keyBatches chan<- []string) error {
 	keyBatchSize := 100
 	s := radix.NewScanner(client, radix.ScanOpts{Command: "SCAN", Pattern: keyRegex, Count: keyBatchSize})
 
@@ -255,19 +255,17 @@ func scanKeys(client radix.Client, keyRegex string, keyBatches chan<- []string, 
 			nProcessed += len(keyBatch)
 			keyBatches <- keyBatch
 			keyBatch = nil
-			progressNotifications <- ProgressNotification{nProcessed, dbSize}
 		}
 	}
 
 	keyBatches <- keyBatch
 	nProcessed += len(keyBatch)
-	progressNotifications <- ProgressNotification{nProcessed, dbSize}
 
 	return s.Close()
 }
 
 // DumpDB dumps all keys from a single Redis DB
-func DumpDB(redisURL string, keyRegex string, nWorkers int, withTTL bool, logger *log.Logger, serializer func([]string) string, progress chan<- ProgressNotification) error {
+func DumpDB(redisURL string, keyRegex string, nWorkers int, withTTL bool, logger *log.Logger, serializer func([]string) string) error {
 	var err error
 
 	errors := make(chan error)
@@ -299,7 +297,7 @@ func DumpDB(redisURL string, keyRegex string, nWorkers int, withTTL bool, logger
 		go dumpKeysWorker(client, keyBatches, withTTL, logger, serializer, errors, done)
 	}
 
-	scanKeys(client, keyRegex, keyBatches, progress)
+	scanKeys(client, keyRegex, keyBatches)
 	close(keyBatches)
 
 	for i := 0; i < nWorkers; i++ {
@@ -323,7 +321,7 @@ func redisURL(redisHost string, redisPort string, redisDB string, redisPassword 
 // DumpServer dumps all Keys from the redis server given by redisURL,
 // to the Logger logger. Progress notification informations
 // are regularly sent to the channel progressNotifications
-func DumpServer(redisHost string, redisPort int, redisPassword string, keyRegex string, nWorkers int, withTTL bool, logger *log.Logger, serializer func([]string) string, progress chan<- ProgressNotification) error {
+func DumpServer(redisHost string, redisPort int, redisPassword string, keyRegex string, nWorkers int, withTTL bool, logger *log.Logger, serializer func([]string) string) error {
 	url := redisURL(redisHost, fmt.Sprint(redisPort), "", redisPassword)
 	dbs, err := getDBIndexes(url)
 	if err != nil {
@@ -332,7 +330,7 @@ func DumpServer(redisHost string, redisPort int, redisPassword string, keyRegex 
 
 	for _, db := range dbs {
 		url = redisURL(redisHost, fmt.Sprint(redisPort), fmt.Sprint(db), redisPassword)
-		if err = DumpDB(url, keyRegex, nWorkers, withTTL, logger, serializer, progress); err != nil {
+		if err = DumpDB(url, keyRegex, nWorkers, withTTL, logger, serializer); err != nil {
 			return err
 		}
 	}
