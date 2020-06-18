@@ -31,6 +31,8 @@ Usage of ./redis-dump-go:
         Server host (default "127.0.0.1")
   -n int
         Parallel workers (default 10)
+  -key string
+        KeyRegex of dump keys (default "*")
   -output string
         Output type - can be resp or commands (default "resp")
   -port int
@@ -38,6 +40,7 @@ Usage of ./redis-dump-go:
   -s    Silent mode (disable progress bar)
 $ redis-dump-go > redis-backup.resp
 [==================================================] 100% [5/5]
+$ redis-dump-go -key prefix\* > redis-backup.resp
 ```
 
 For password-protected Redis servers, set the shell variable REDISDUMPGO_AUTH:

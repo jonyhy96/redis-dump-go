@@ -30,6 +30,7 @@ func realMain() int {
 	// TODO: Number of workers & TTL as parameters
 	host := flag.String("host", "127.0.0.1", "Server host")
 	port := flag.Int("port", 6379, "Server port")
+	keyRegex := flag.String("key", "*", "Keys regex to dump")
 	nWorkers := flag.Int("n", 10, "Parallel workers")
 	withTTL := flag.Bool("ttl", true, "Preserve Keys TTL")
 	output := flag.String("output", "resp", "Output type - can be resp or commands")
@@ -71,7 +72,7 @@ func realMain() int {
 	}
 
 	logger := log.New(os.Stdout, "", 0)
-	if err = redisdump.DumpServer(*host, *port, redisPassword, *nWorkers, *withTTL, logger, serializer, progressNotifs); err != nil {
+	if err = redisdump.DumpServer(*host, *port, redisPassword, *keyRegex, *nWorkers, *withTTL, logger, serializer, progressNotifs); err != nil {
 		fmt.Println(err)
 		return 1
 	}
