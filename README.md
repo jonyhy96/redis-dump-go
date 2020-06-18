@@ -1,4 +1,4 @@
-[![pipeline status](https://gitlab.com/yannhamon/redis-dump-go/badges/master/pipeline.svg)](https://gitlab.com/yannhamon/redis-dump-go/commits/master) [![go report card](https://goreportcard.com/badge/github.com/yannh/redis-dump-go)](https://goreportcard.com/report/github.com/yannh/redis-dump-go)
+[![pipeline status](https://gitlab.com/yannhamon/redis-dump-go/badges/master/pipeline.svg)](https://gitlab.com/yannhamon/redis-dump-go/commits/master) [![go report card](https://goreportcard.com/badge/github.com/jonyhy96/redis-dump-go)](https://goreportcard.com/report/github.com/jonyhy96/redis-dump-go)
 
 # Redis-dump-go
 
@@ -55,8 +55,8 @@ $ redis-dump-go
 Given a correctly configured Go environment:
 
 ```
-$ go get github.com/yannh/redis-dump-go
-$ cd ${GOPATH}/src/github.com/yannh/redis-dump-go
+$ go get github.com/jonyhy96/redis-dump-go
+$ cd ${GOPATH}/src/github.com/jonyhy96/redis-dump-go
 $ go test ./...
 $ go install
 ```

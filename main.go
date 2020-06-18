@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/yannh/redis-dump-go/redisdump"
+	"github.com/jonyhy96/redis-dump-go/redisdump"
 )
 
 func drawProgressBar(to io.Writer, currentPosition, nElements, widgetSize int) {
