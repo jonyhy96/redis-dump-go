@@ -50,7 +50,7 @@ func realMain() int {
 
 	logger := log.New(os.Stdout, "", 0)
 	if err = redisdump.DumpServer(*host, *port, *password, *keyRegex, *nWorkers, *withTTL, logger, serializer); err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 		return 1
 	}
 	return 0
